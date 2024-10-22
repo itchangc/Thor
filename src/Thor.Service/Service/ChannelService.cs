@@ -19,7 +19,7 @@ namespace Thor.Service.Service;
 /// </summary>
 /// <param name="serviceProvider"></param>
 /// <param name="mapper"></param>
-public sealed class ChannelService(IServiceProvider serviceProvider, IMapper mapper,IServiceCache cache)
+public sealed class ChannelService(IServiceProvider serviceProvider, IMapper mapper, IServiceCache cache)
     : ApplicationService(serviceProvider)
 {
     private const string CacheKey = "CacheKey:Channel";
@@ -32,6 +32,15 @@ public sealed class ChannelService(IServiceProvider serviceProvider, IMapper map
         {
             return await DbContext.Channels.AsNoTracking().Where(x => !x.Disable).ToArrayAsync();
         });
+    }
+    /// <summary>
+    /// 获取包含指定模型名的渠道列表 如果缓存中有则从缓存中获取
+    /// </summary>
+    /// <param name="model">模型名</param>
+    /// <returns></returns>
+    public async ValueTask<IEnumerable<ChatChannel>> GetChannelsContainsModelAsync(List<string> models)
+    {
+        return (await GetChannelsAsync()).Where(x => x.Models.Any(model => models.Contains(model)));
     }
 
     /// <summary>
@@ -54,9 +63,9 @@ public sealed class ChannelService(IServiceProvider serviceProvider, IMapper map
         var result = mapper.Map<ChatChannel>(channel);
         result.Id = Guid.NewGuid().ToString();
         await DbContext.Channels.AddAsync(result);
-        
+
         await DbContext.SaveChangesAsync();
-        
+
         await cache.RemoveAsync(CacheKey);
     }
 
@@ -96,7 +105,7 @@ public sealed class ChannelService(IServiceProvider serviceProvider, IMapper map
             .ExecuteDeleteAsync();
 
         await cache.RemoveAsync(CacheKey);
-        
+
         return result > 0;
     }
 
@@ -150,7 +159,7 @@ public sealed class ChannelService(IServiceProvider serviceProvider, IMapper map
         await DbContext.Channels
             .Where(x => x.Id == id)
             .ExecuteUpdateAsync(x => x.SetProperty(y => y.Order, order));
-        
+
         await cache.RemoveAsync(CacheKey);
     }
 
@@ -167,7 +176,7 @@ public sealed class ChannelService(IServiceProvider serviceProvider, IMapper map
         await DbContext.Channels
             .Where(x => x.Id == id)
             .ExecuteUpdateAsync(x => x.SetProperty(y => y.Disable, a => !a.Disable));
-        
+
         await cache.RemoveAsync(CacheKey);
     }
 

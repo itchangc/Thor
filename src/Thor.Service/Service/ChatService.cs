@@ -162,7 +162,7 @@ public sealed class ChatService(
         }
     }
 
-    public async ValueTask EmbeddingAsync(HttpContext context,ThorEmbeddingInput module)
+    public async ValueTask EmbeddingAsync(HttpContext context, ThorEmbeddingInput module)
     {
         try
         {
@@ -353,7 +353,6 @@ public sealed class ChatService(
 
         return (requestToken, responseToken);
     }
-
     /// <summary>
     /// 对话补全调用
     /// </summary>
@@ -369,10 +368,17 @@ public sealed class ChatService(
             await rateLimitModelService.CheckAsync(model, context);
 
             var (token, user) = await tokenService.CheckTokenAsync(context);
-
-            // 获取渠道通过算法计算权重
-            var channel = CalculateWeight(await channelService.GetChannelsContainsModelAsync(model));
-
+            var channel = new ChatChannel();
+            var models = new List<string> { "gpt-4o", "gpt4o" };
+            if (models.Contains(model))
+            {
+                channel = CalculateWeight(await channelService.GetChannelsContainsModelAsync(models));
+            }
+            else
+            {
+                // 获取渠道通过算法计算权重
+                channel = CalculateWeight(await channelService.GetChannelsContainsModelAsync(model));
+            }
             if (channel == null)
             {
                 throw new NotModelException(model);

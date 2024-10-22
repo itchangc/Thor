@@ -89,7 +89,7 @@ export function getIconByName(name: string, size: number = 36) {
             };
         case 'Doubao':
             return {
-                icon: <IconAvatar Icon={Doubao} size={size} />,
+                // icon: <IconAvatar Icon={Doubao} size={size} />,
                 label: '豆包'
             };
         case 'Google':
@@ -119,7 +119,7 @@ export function getIconByName(name: string, size: number = 36) {
             };
         case 'Stepfun':
             return {
-                icon: <IconAvatar Icon={Stepfun} size={size} />,
+                // icon: <IconAvatar Icon={Stepfun} size={size} />,
                 label: 'Stepfun'
             };
         case 'Tongyi':
