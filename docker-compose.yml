@@ -9,6 +9,11 @@ services:
       context: .
       dockerfile: src/Thor.Service/Dockerfile
     container_name: thor
+    depends_on:
+      - postgres
+      - ai-rabbitmq
+      - ai-redis
+      - aspire-dashboard
     volumes:
       - ./data:/data
     environment:
