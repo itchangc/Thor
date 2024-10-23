@@ -374,6 +374,7 @@ public sealed class ChatService(
             {
                 channel = CalculateWeight(await channelService.GetChannelsContainsModelAsync(models));
                 model = channel?.Models.FirstOrDefault();
+                request.Model = model;
             }
             else
             {
