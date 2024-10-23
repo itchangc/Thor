@@ -19,7 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution 
 		Directory.Build.props = Directory.Build.props
 		docker-compose.yml = docker-compose.yml
 		README.md = README.md
-		docker-compose-rabbitmq.yml = docker-compose-rabbitmq.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thor.OpenAI", "src\extensions\Thor.OpenAI\Thor.OpenAI.csproj", "{F0FB17C9-8355-44C6-8340-066BE93694D8}"
@@ -52,13 +51,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thor.RedisMemory.Cache", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thor.Moonshot", "src\extensions\Thor.Moonshot\Thor.Moonshot.csproj", "{4D98C74B-D071-430C-9956-3A9B8CF642DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thor.Core", "src\framework\Thor.Core\Thor.Core.csproj", "{88790F95-50F1-4A17-8BE8-287D68E433CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thor.Core", "src\framework\Thor.Core\Thor.Core.csproj", "{88790F95-50F1-4A17-8BE8-287D68E433CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thor.RabbitMQEvent", "src\framework\Thor.RabbitMQEvent\Thor.RabbitMQEvent.csproj", "{C1F516B3-E06A-4F2A-8465-FC3D8C7645D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thor.RabbitMQEvent", "src\framework\Thor.RabbitMQEvent\Thor.RabbitMQEvent.csproj", "{C1F516B3-E06A-4F2A-8465-FC3D8C7645D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thor.AppHost", "src\Thor.AppHost\Thor.AppHost.csproj", "{40A5DC80-CF4A-4491-93EF-D2AD0AF8F2BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thor.AppHost", "src\Thor.AppHost\Thor.AppHost.csproj", "{40A5DC80-CF4A-4491-93EF-D2AD0AF8F2BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thor.ServiceDefaults", "src\Thor.ServiceDefaults\Thor.ServiceDefaults.csproj", "{BE7E011E-E469-44B4-B06B-CE908762D7A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Thor.ServiceDefaults", "src\Thor.ServiceDefaults\Thor.ServiceDefaults.csproj", "{BE7E011E-E469-44B4-B06B-CE908762D7A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
