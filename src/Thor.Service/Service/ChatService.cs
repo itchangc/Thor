@@ -373,7 +373,7 @@ public sealed class ChatService(
             if (models.Contains(model))
             {
                 channel = CalculateWeight(await channelService.GetChannelsContainsModelAsync(models));
-                model = channel?.Models.FirstOrDefault();
+                model = channel.Models.FirstOrDefault(m => models.Contains(m));
                 request.Model = model;
             }
             else
