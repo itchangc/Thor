@@ -68,8 +68,10 @@ public static class OpenAIServiceCollectionExtensions
                 })
             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
-                PooledConnectionLifetime = TimeSpan.FromMinutes(6),
-                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(6),
+                PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(10),
+                EnableMultipleHttp2Connections = true,
+                ConnectTimeout = TimeSpan.FromMinutes(10)
             });
 
         return services;

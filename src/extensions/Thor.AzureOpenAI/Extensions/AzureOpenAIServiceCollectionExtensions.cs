@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Headers;
 using Thor.Abstractions;
 using Thor.Abstractions.Chats;
 using Thor.Abstractions.Embeddings;
@@ -47,6 +48,20 @@ public static class AzureOpenAIServiceCollectionExtensions
             AzureOpenAIPlatformOptions.PlatformCode);
         services.AddKeyedSingleton<IThorImageService, AzureOpenAIServiceImageService>(AzureOpenAIPlatformOptions.PlatformCode);
 
+        services.AddHttpClient(AzureOpenAIPlatformOptions.PlatformCode,
+                options =>
+                {
+                    options.Timeout = TimeSpan.FromMinutes(10);
+
+                    options.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
+                })
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(10),
+                EnableMultipleHttp2Connections = true,
+                ConnectTimeout = TimeSpan.FromMinutes(10)
+            });
         return services;
     }
 }

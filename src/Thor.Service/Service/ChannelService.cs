@@ -224,9 +224,10 @@ public sealed class ChannelService(IServiceProvider serviceProvider, IMapper map
         if (channel.Type == OpenAIPlatformOptions.PlatformCode)
         {
             // 如果没gpt3.5则搜索是否存在gpt4o模型
-            chatRequest.Model = channel.Models.FirstOrDefault(x =>
+            chatRequest.Model = channel.Models?.FirstOrDefault(x =>
                 x.StartsWith("gpt-3.5", StringComparison.OrdinalIgnoreCase) ||
-                x.StartsWith("gpt-4o", StringComparison.OrdinalIgnoreCase));
+                x.StartsWith("gpt-4o", StringComparison.OrdinalIgnoreCase)) ?? channel.Models!.First();
+
 
             if (chatRequest.Model.IsNullOrEmpty())
             {
@@ -277,7 +278,7 @@ public sealed class ChannelService(IServiceProvider serviceProvider, IMapper map
         {
             response = await chatCompletionsService.ChatCompletionsAsync(chatRequest, platformOptions,
                 token.Token);
-        }, 3, 500);
+        }, 3).ConfigureAwait(false);
 
         sw.Stop();
 

@@ -539,7 +539,7 @@ public sealed class ChatService(
             ThorChatCompletionsResponse result = null;
 
             await circuitBreaker.ExecuteAsync(
-                async () => { result = await openService.ChatCompletionsAsync(request, platformOptions); }, 3, 50);
+                async () => { result = await openService.ChatCompletionsAsync(request, platformOptions); }, 3);
 
             await context.Response.WriteAsJsonAsync(result);
 
@@ -560,7 +560,7 @@ public sealed class ChatService(
             ThorChatCompletionsResponse result = null;
 
             await circuitBreaker.ExecuteAsync(
-                async () => { result = await openService.ChatCompletionsAsync(request, platformOptions); }, 3, 50);
+                async () => { result = await openService.ChatCompletionsAsync(request, platformOptions); }, 3);
 
             await context.Response.WriteAsJsonAsync(result);
 
@@ -688,7 +688,7 @@ public sealed class ChatService(
                     responseMessage.Append(item.Choices?.FirstOrDefault()?.Delta.Content ?? string.Empty);
                     await context.WriteAsEventStreamDataAsync(item).ConfigureAwait(false);
                 }
-            }, 3, 50);
+            }, 3);
 
         await context.WriteAsEventStreamEndAsync();
 
