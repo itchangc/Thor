@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
 using Thor.Abstractions;
 using Thor.Abstractions.Chats;
@@ -11,15 +10,45 @@ using Thor.Abstractions.Extensions;
 
 namespace Thor.OpenAI.Chats;
 
-public sealed class OpenAIChatCompletionsService(IHttpClientFactory httpClientFactory) : IThorChatCompletionsService
+public sealed class OpenAIChatCompletionsService : IThorChatCompletionsService
 {
+    public OpenAIChatCompletionsService()
+    {
+        InitClient();
+    }
+    private List<HttpClient> _keyValuePairs = new List<HttpClient>();
+    private void InitClient()
+    {
+        if (_keyValuePairs.Count > 0)
+        {
+            return;
+        }
+
+        // 构建多个HttpClient
+        for (int i = 0; i < 5; i++)
+        {
+            _keyValuePairs.Add(new HttpClient(new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(10),
+                EnableMultipleHttp2Connections = true,
+                ConnectTimeout = TimeSpan.FromMinutes(10),
+                KeepAlivePingTimeout = TimeSpan.FromMinutes(10),
+                ResponseDrainTimeout = TimeSpan.FromMinutes(10),
+            }));
+        }
+    }
+
+    public HttpClient Client()
+    {
+        return _keyValuePairs.OrderBy(x => Guid.NewGuid()).First();
+    }
+
     public async Task<ThorChatCompletionsResponse> ChatCompletionsAsync(ThorChatCompletionsRequest chatCompletionCreate,
         ThorPlatformOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        var client = httpClientFactory.CreateClient(OpenAIPlatformOptions.PlatformCode);
-
-        var response = await client.PostJsonAsync(options?.Address.TrimEnd('/') + "/v1/chat/completions",
+        var response = await Client().PostJsonAsync(options?.Address.TrimEnd('/') + "/v1/chat/completions",
             chatCompletionCreate, options.ApiKey);
 
         if (response.StatusCode == HttpStatusCode.Unauthorized)
@@ -45,9 +74,7 @@ public sealed class OpenAIChatCompletionsService(IHttpClientFactory httpClientFa
         ThorChatCompletionsRequest chatCompletionCreate, ThorPlatformOptions? options = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var client = httpClientFactory.CreateClient(OpenAIPlatformOptions.PlatformCode);
-
-        var response = await client.HttpRequestRaw(options?.Address.TrimEnd('/') + "/v1/chat/completions",
+        var response = await Client().HttpRequestRaw(options?.Address.TrimEnd('/') + "/v1/chat/completions",
             chatCompletionCreate, options.ApiKey);
 
         if (response.StatusCode == HttpStatusCode.Unauthorized)

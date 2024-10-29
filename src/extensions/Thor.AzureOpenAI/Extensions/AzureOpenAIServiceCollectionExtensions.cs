@@ -60,7 +60,9 @@ public static class AzureOpenAIServiceCollectionExtensions
                 PooledConnectionLifetime = TimeSpan.FromMinutes(10),
                 PooledConnectionIdleTimeout = TimeSpan.FromMinutes(10),
                 EnableMultipleHttp2Connections = true,
-                ConnectTimeout = TimeSpan.FromMinutes(10)
+                ConnectTimeout = TimeSpan.FromMinutes(10),
+                KeepAlivePingTimeout = TimeSpan.FromMinutes(10),
+                ResponseDrainTimeout = TimeSpan.FromMinutes(10),
             });
         return services;
     }

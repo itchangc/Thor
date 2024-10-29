@@ -559,6 +559,8 @@ public sealed class ChatService(
 
             ThorChatCompletionsResponse result = null;
 
+            //result = await openService.ChatCompletionsAsync(request, platformOptions);
+
             await circuitBreaker.ExecuteAsync(
                 async () => { result = await openService.ChatCompletionsAsync(request, platformOptions); }, 3);
 

@@ -7,22 +7,52 @@ using Thor.Abstractions.Extensions;
 
 namespace Thor.AzureOpenAI.Chats;
 
-public class AzureOpenAIChatCompletionsService(IHttpClientFactory httpClientFactory) : IThorChatCompletionsService
+public class AzureOpenAIChatCompletionsService : IThorChatCompletionsService
 {
+    public AzureOpenAIChatCompletionsService()
+    {
+        InitClient();
+    }
+    private List<HttpClient> _keyValuePairs = new List<HttpClient>();
+    private void InitClient()
+    {
+        if(_keyValuePairs.Count > 0)
+        {
+            return;
+        }
+
+        // 构建多个HttpClient
+        for (int i = 0; i < 5; i++)
+        {
+            _keyValuePairs.Add(new HttpClient(new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(10),
+                EnableMultipleHttp2Connections = true,
+                ConnectTimeout = TimeSpan.FromMinutes(10),
+                KeepAlivePingTimeout = TimeSpan.FromMinutes(10),
+                ResponseDrainTimeout = TimeSpan.FromMinutes(10),
+            }));
+        }
+    }
+
+    public HttpClient Client()
+    {
+        return _keyValuePairs.OrderBy(x => Guid.NewGuid()).First();
+    }
+
+
     public async Task<ThorChatCompletionsResponse> ChatCompletionsAsync(ThorChatCompletionsRequest chatCompletionCreate,
         ThorPlatformOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        var client = httpClientFactory.CreateClient(AzureOpenAIPlatformOptions.PlatformCode);
-
         var url = AzureOpenAIFactory.GetAddress(options, chatCompletionCreate.Model);
 
         chatCompletionCreate.Model = null;
-
-        var response = await client.PostJsonAsync(url, chatCompletionCreate, options.ApiKey, "Api-Key");
+        var response = await Client().PostJsonAsync(url, chatCompletionCreate, options.ApiKey, "Api-Key").ConfigureAwait(false);
 
         var result = await response.Content
-            .ReadFromJsonAsync<ThorChatCompletionsResponse>(cancellationToken: cancellationToken)
+            .ReadFromJsonAsync<ThorChatCompletionsResponse>()
             .ConfigureAwait(false);
 
         return result;
@@ -32,13 +62,11 @@ public class AzureOpenAIChatCompletionsService(IHttpClientFactory httpClientFact
         ThorChatCompletionsRequest chatCompletionCreate, ThorPlatformOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        var client = httpClientFactory.CreateClient(AzureOpenAIPlatformOptions.PlatformCode);
-
         var url = AzureOpenAIFactory.GetAddress(options, chatCompletionCreate.Model);
 
         chatCompletionCreate.Model = null;
 
-        var response = await client.HttpRequestRaw(url,
+        var response = await Client().HttpRequestRaw(url,
             chatCompletionCreate, options.ApiKey, "Api-Key");
 
         using var stream = new StreamReader(await response.Content.ReadAsStreamAsync(cancellationToken));
