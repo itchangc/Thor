@@ -23,7 +23,6 @@ import {
     Ollama,
     SiliconCloud,
     Gemma,
-    AssemblyAI,
     Doubao,
     Stability
 } from '@lobehub/icons';
@@ -55,7 +54,6 @@ export function getIconByNames(size: number = 24) {
         "Zhipu",
         "Wenxin",
         "Gemma",
-        "AssemblyAI",
         "Doubao",
         "Stability"
     ]
@@ -190,11 +188,6 @@ export function getIconByName(name: string, size: number = 36) {
             return {
                 icon: <IconAvatar Icon={Gemma} size={size} />,
                 label: 'Gemma'
-            };
-        case 'AssemblyAI':
-            return {
-                icon: <IconAvatar Icon={AssemblyAI} size={size} />,
-                label: 'AssemblyAI'
             };
         case 'Doubao':
             return {
