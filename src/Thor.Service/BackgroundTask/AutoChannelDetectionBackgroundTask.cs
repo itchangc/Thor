@@ -14,6 +14,7 @@ public sealed class AutoChannelDetectionBackgroundTask(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        return;
         try
         {
             // 获取环境变量是否启用自动检测通道
