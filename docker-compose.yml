@@ -2,7 +2,7 @@
 
 services:
   thor:
-    image: crpi-j9ha7sxwhatgtvj4.cn-shenzhen.personal.cr.aliyuncs.com/koala-ai/thor
+    image: github/thor:latest
     ports:
       - 18080:8080
     build:

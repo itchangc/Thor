@@ -310,6 +310,22 @@ public sealed partial class ChatService(
         using var chatCompletions =
             Activity.Current?.Source.StartActivity("对话补全调用");
 
+        // 记录完整的请求参数
+        try
+        {
+            var requestJson = JsonSerializer.Serialize(request, new JsonSerializerOptions
+            {
+                WriteIndented = false,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
+            logger.LogInformation("对话补全请求完整参数：{RequestJson}", requestJson);
+        }
+        catch (Exception serializeEx)
+        {
+            logger.LogWarning("序列化请求参数失败：{SerializeEx}", serializeEx.Message);
+        }
+
+
         var model = request.Model;
 
         if (request.MaxCompletionTokens is > 0)
