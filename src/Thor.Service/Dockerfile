@@ -58,8 +58,18 @@ ARG BUILD_CONFIGURATION=Release
 ARG TARGETARCH
 RUN dotnet publish "./Thor.Service.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+FROM node:18 AS frontend-build
+WORKDIR /src/lobe
+COPY lobe/package*.json ./
+RUN npm ci --force
+COPY lobe/ ./
+RUN npm run build
+
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+USER root
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN echo "Asia/Shanghai" > /etc/timezone
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY lobe/dist ./wwwroot
+COPY --from=frontend-build /src/lobe/dist ./wwwroot
 ENTRYPOINT ["dotnet", "Thor.Service.dll"]
