@@ -144,7 +144,8 @@ public sealed class ChannelService(
                 x.Models.Contains(model)
                 //&& (!isResponses || x.SupportsResponses)
                 // 防止重试重复分配 - 确保渠道ID不在已使用列表中
-                && !ChannelAsyncLocal.ChannelIds.Contains(x.Id))
+                //&& !ChannelAsyncLocal.ChannelIds.Contains(x.Id)
+                )
             .ToList();
 
         if (result.Count == 0) return [];
