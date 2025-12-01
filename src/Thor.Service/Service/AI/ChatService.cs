@@ -318,7 +318,7 @@ public sealed partial class ChatService(
                 WriteIndented = false,
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             });
-            logger.LogInformation("对话补全请求完整参数：{RequestJson}", requestJson);
+            logger.LogInformation("ChatCompletionsAsync 对话补全请求完整参数：{RequestJson}", requestJson);
         }
         catch (Exception serializeEx)
         {
